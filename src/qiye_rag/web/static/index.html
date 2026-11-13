@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qiye RAG v4</title>
+<style>
+body{font:16px/1.6 system-ui;margin:32px auto;max-width:900px;padding:0 18px;background:#f5f7fa;color:#203047}
+section{background:white;padding:22px;margin:18px 0;border:1px solid #dbe2ea;border-radius:10px}
+input,textarea,button{font:inherit;padding:8px;box-sizing:border-box}textarea{width:100%;min-height:110px}
+button{background:#2456c9;color:white;border:0;border-radius:5px;cursor:pointer}button:disabled{opacity:.5}
+pre{white-space:pre-wrap;overflow-wrap:anywhere}label{display:inline-block;margin:6px 14px 10px 0}
+small{color:#526377}#answer{min-height:65px}
+</style>
+<h1>知识库问答 · v4</h1>
+<p>上传资料，等待异步解析与索引完成，再开始带来源引用的问答。</p>
+<label>知识库 <input id="kb" value="demo" pattern="[A-Za-z0-9_-]{1,64}" required></label>
+<p id="account"></p><button id="logout">退出登录</button><section id="uploadSection"><h2>1. 上传与索引（HR）</h2>
+<form id="upload"><input id="file" type="file" accept=".pdf,.docx,.md" multiple><p>或选择整个文件夹：<input id="folder" type="file" webkitdirectory multiple></p><label>文档等级 <select id="level"><option value="internal">普通用户可查询</option><option value="restricted">仅 HR 可查询</option></select></label>
+<button id="uploadButton">上传并建立索引</button></form>
+<pre id="task">支持 PDF、DOCX、Markdown，单文件最多 10 MB。</pre></section>
+<section><h2>文档目录</h2><button id="refreshDocs">刷新可访问文档</button><div id="documents"></div></section><section><h2>2. 问答</h2>
+<label>会话名 <input id="session" value="default" required maxlength="80"></label>
+<form id="chat"><textarea id="text" placeholder="输入关于已上传资料的问题" required></textarea>
+<button id="ask">发送问题</button> <button id="resume" type="button">恢复上次中断</button></form>
+<p><small id="progress">审核通过后显示最终答案；节点进度会实时更新。</small></p>
+<pre id="answer"></pre><pre id="citations"></pre></section>
+<script>
+const el=id=>document.getElementById(id);
+const token=sessionStorage.getItem('rag_token');if(!token)location.href='/login';
+let role='user';const nativeFetch=window.fetch.bind(window);
+window.fetch=(url,options={})=>nativeFetch(url,{...options,headers:{...(options.headers||{}),Authorization:'Bearer '+token}});
+fetch('/api/auth/me').then(async response=>{if(!response.ok){sessionStorage.removeItem('rag_token');location.href='/login';return;}const user=await response.json();role=user.role;el('account').textContent=user.username+' / '+user.role;el('uploadSection').hidden=user.role!=='hr';});
+el('logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});sessionStorage.removeItem('rag_token');location.href='/login';};
+function kb(){const value=el('kb').value.trim();if(!/^[A-Za-z0-9_-]{1,64}$/.test(value))throw Error('知识库名只能用字母、数字、下划线和短横线');return value;}
+async function checked(response){if(!response.ok){const data=await response.json();throw Error(typeof data.detail==='string'?data.detail:JSON.stringify(data.detail));}return response;}
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+el('refreshDocs').onclick=async()=>{try{const docs=await(await checked(await fetch('/api/documents?kb='+encodeURIComponent(kb())))).json();el('documents').textContent='';for(const doc of docs){const row=document.createElement('p');row.textContent=doc.filename+' ['+doc.access_level+'] ';if(role==='hr'){const button=document.createElement('button');button.textContent='查看文件';button.onclick=async()=>{try{const response=await checked(await fetch('/api/documents/'+doc.document_id));const url=URL.createObjectURL(await response.blob());const link=document.createElement('a');link.href=url;link.download=doc.filename.split('/').pop();link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(error){row.append(document.createTextNode(error.message));}};row.append(button);}el('documents').append(row);}}catch(error){el('documents').textContent=error.message;}};
+el('upload').onsubmit=async e=>{e.preventDefault();el('uploadButton').disabled=true;
+try{const files=[...el('file').files,...el('folder').files];if(!files.length)throw Error('请选择文件或文件夹');
+const data=new FormData();for(const file of files)data.append('files',file,file.webkitRelativePath||file.name);data.append('access_level',el('level').value);
+const response=await checked(await fetch('/api/documents/batch?kb='+encodeURIComponent(kb()),{method:'POST',body:data}));
+const batch=await response.json();const messages=batch.errors.map(e=>e.filename+'：'+e.error);
+const pending=new Map(batch.tasks.map(job=>[job.task_id,job.filename]));
+while(pending.size){el('task').textContent=messages.join('\n')+'\n等待 '+pending.size+' 个任务……';await sleep(1000);
+for(const [id,name] of pending){const status=await(await checked(await fetch('/api/tasks/'+id))).json();
+if(status.state==='SUCCESS'){messages.push(name+'：成功，'+status.result.chunks+' 个 Chunk\n'+JSON.stringify(status.result.preview,null,2));pending.delete(id);}
+else if(status.error){messages.push(name+'：'+status.error);pending.delete(id);}}}
+el('task').textContent=messages.join('\n')||'未提交有效文件';
+}catch(error){el('task').textContent=error.message;}finally{el('uploadButton').disabled=false;}};async function ask(resume){el('ask').disabled=true;el('resume').disabled=true;el('answer').textContent='';el('citations').textContent='';
+try{const response=await checked(await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({kb:kb(),text:el('text').value,session:el('session').value,resume})}));
+const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
+for(;;){const {value,done}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true});
+let index;while((index=buffer.indexOf('\n\n'))>=0){const frame=buffer.slice(0,index);buffer=buffer.slice(index+2);
+const lines=frame.split('\n'),event=lines.find(s=>s.startsWith('event:'))?.slice(6).trim();
+const raw=lines.filter(s=>s.startsWith('data:')).map(s=>s.slice(5).trim()).join('\n');if(!raw)continue;
+const data=JSON.parse(raw);
+if(event==='start')el('progress').textContent='正在启动问答……';
+if(event==='progress')el('progress').textContent='已完成节点：'+data.node;
+if(event==='answer'){el('answer').textContent=data.answer;el('progress').textContent='检索 '+data.attempts+' 轮；校验'+(data.approved?'通过':'未通过/无需校验');
+el('citations').textContent=data.citations.map(c=>'['+c.number+'] '+(c.title||'')+' | '+c.source_path+' | '+(c.location||'')).join('\n');}
+if(event==='error')throw Error(data.message);}}
+}catch(error){el('progress').textContent=error.message;}finally{el('ask').disabled=false;el('resume').disabled=false;}}
+el('chat').onsubmit=e=>{e.preventDefault();ask(false);};el('resume').onclick=()=>ask(true);
+</script></html>
