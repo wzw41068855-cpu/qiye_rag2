@@ -5,6 +5,7 @@ from typing import Any
 import httpx
 from qiye_rag.rag.config import load_config
 from qiye_rag.rag.schema import collection_layout
+from qiye_rag.telemetry import stage
 
 
 class MilvusVectors:
@@ -80,8 +81,9 @@ class MilvusVectors:
         # 先验证 JSON 可序列化并复制数据；SDK 将字典编码进原生 JSON 字段。
         # 不传 json.dumps 后的字符串，避免 metadata 被二次编码而无法按键过滤。
         metadatas = json.loads(json.dumps([p["metadata"] for p in parts], ensure_ascii=False, allow_nan=False))
-        self.store.add_texts(texts=[p["text"] for p in parts],
-            metadatas=metadatas, ids=[p["id"] for p in parts])
+        with stage("index_embedding", model_calls=1, chunks=len(parts)):
+            self.store.add_texts(texts=[p["text"] for p in parts],
+                metadatas=metadatas, ids=[p["id"] for p in parts])
 
     def delete(self, ids: list[str]) -> None:
         """删除指定片段。
@@ -199,9 +201,13 @@ class Reranker:
             return []
         if not self.remote:
             return self.model.predict([(query, c["text"]) for c in parts]).tolist()
-        response = httpx.post(self.url, headers={"Authorization": f"Bearer {self.key}"},
-            json={"model": self.name, "input": {"query": query, "documents": [c["text"] for c in parts]},
-                  "parameters": {"top_n": len(parts), "return_documents": False}}, timeout=self.timeout)
+        with stage("rerank_api", model_calls=0) as event:
+            response = httpx.post(self.url, headers={"Authorization": f"Bearer {self.key}"},
+                json={"model": self.name, "input": {"query": query, "documents": [c["text"] for c in parts]},
+                      "parameters": {"top_n": len(parts), "return_documents": False}}, timeout=self.timeout)
+            if response.is_success:
+                usage = response.json().get("usage", {})
+                event["total_tokens"] = usage.get("total_tokens")
         if not response.is_success:
             raise RuntimeError(f"Rerank API 请求失败，HTTP {response.status_code}")
         # API 按相关性排序返回，必须根据 index 还原为候选原顺序。
