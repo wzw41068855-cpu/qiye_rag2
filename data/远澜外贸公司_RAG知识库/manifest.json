@@ -1,0 +1,872 @@
+{
+  "company": "远澜国际贸易有限公司（虚构）",
+  "as_of": "2026-10-01",
+  "documents": [
+    {
+      "doc_id": "HR001",
+      "title": "员工入职与试用期管理",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR001_员工入职与试用期管理.pdf",
+      "chars": 774,
+      "sha256": "d407370d920404984ad7be2905706f5796bf2c5e02a7c1090ccedba0f8148bba"
+    },
+    {
+      "doc_id": "HR002",
+      "title": "考勤与远程办公制度",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR002_考勤与远程办公制度.pdf",
+      "chars": 652,
+      "sha256": "8d8b12e0a2f07df1a4b409f56f918db2564f9ac479874e5347f36912191b2be8"
+    },
+    {
+      "doc_id": "HR003",
+      "title": "休假与年假制度V2",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-07-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR003_休假与年假制度V2.pdf",
+      "chars": 779,
+      "sha256": "e95296bc605f434617669958118f40b4ed4ee5366a20cc805de2dfe253d31494"
+    },
+    {
+      "doc_id": "HR004",
+      "title": "离职交接与档案归档",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR004_离职交接与档案归档.pdf",
+      "chars": 700,
+      "sha256": "b8c566dd533585ea1997cb47bfd2e589c4fc2b4325605ebb7a5ec78b8bbec64d"
+    },
+    {
+      "doc_id": "HR005",
+      "title": "绩效管理与季度考核",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR005_绩效管理与季度考核.pdf",
+      "chars": 688,
+      "sha256": "243b13071eb99702fcefc52c4fc4bccfe743ffd13c3a68956b65cca6eae70b09"
+    },
+    {
+      "doc_id": "HR006",
+      "title": "信息安全与客户资料保护",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR006_信息安全与客户资料保护.pdf",
+      "chars": 725,
+      "sha256": "94ae112c4c0127b4c31769a0d58d61ef0b858608e92857b91b496e259410e2a9"
+    },
+    {
+      "doc_id": "HR007",
+      "title": "部门职责与审批矩阵",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "人事",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "01_人事制度/HR007_部门职责与审批矩阵.pdf",
+      "chars": 648,
+      "sha256": "966ac33789a46ac42a87438b86aa9d9d04a7ad707ccb205e4a0cb8085877f0d9"
+    },
+    {
+      "doc_id": "FIN001",
+      "title": "差旅与费用报销制度V2",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-08-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN001_差旅与费用报销制度V2.pdf",
+      "chars": 756,
+      "sha256": "9fa6bc0c6d7d0ded8f93eb6d1dfcb69e9901ea353710b528b531638dc76a6649"
+    },
+    {
+      "doc_id": "FIN002",
+      "title": "外贸合同收付款审批",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN002_外贸合同收付款审批.pdf",
+      "chars": 668,
+      "sha256": "2c4090713822c7f95609efbaaf834fdbe7876a503575b546574f420cb1260e0e"
+    },
+    {
+      "doc_id": "FIN003",
+      "title": "外汇结算与汇率风险",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN003_外汇结算与汇率风险.pdf",
+      "chars": 621,
+      "sha256": "176f67c1e0719e57d0d21e0bae3a05b84cf5fe61a69113c331632e29b756876c"
+    },
+    {
+      "doc_id": "FIN004",
+      "title": "销售提成与回款确认",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN004_销售提成与回款确认.pdf",
+      "chars": 640,
+      "sha256": "cce16550059e6f73d992e0f95b71efb113615891cb4fa9a6a461623e7ea6c248"
+    },
+    {
+      "doc_id": "FIN005",
+      "title": "发票票据与付款凭证归档",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN005_发票票据与付款凭证归档.pdf",
+      "chars": 630,
+      "sha256": "ae025c5832dd87826b45068d47018828da1cfe15697a477e990cc17ac2c075fc"
+    },
+    {
+      "doc_id": "FIN006",
+      "title": "采购预算与成本核算",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN006_采购预算与成本核算.pdf",
+      "chars": 637,
+      "sha256": "39aff89811f8cf087d5679b6b533316d56c9b19a96ef7e88d4cde1387e7f5245"
+    },
+    {
+      "doc_id": "FIN007",
+      "title": "信用账期与逾期应收账款",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "财务",
+        "制度"
+      ],
+      "supersedes": null,
+      "source_path": "02_财务制度/FIN007_信用账期与逾期应收账款.pdf",
+      "chars": 641,
+      "sha256": "68c495308b10b8e660e21895514250ba31fb54e04d891455b4d661d971c0c483"
+    },
+    {
+      "doc_id": "PR001",
+      "title": "职级体系与晋升通道",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "晋升",
+        "职级"
+      ],
+      "supersedes": null,
+      "source_path": "03_晋升规则/PR001_职级体系与晋升通道.md",
+      "chars": 642,
+      "sha256": "faa2133b1030e80dc6d022151919011e28f6b8df035fa84433b85a75b35e6a70"
+    },
+    {
+      "doc_id": "PR002",
+      "title": "销售岗位晋升量化评分",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "晋升",
+        "职级"
+      ],
+      "supersedes": null,
+      "source_path": "03_晋升规则/PR002_销售岗位晋升量化评分.md",
+      "chars": 643,
+      "sha256": "17d6d5274dda3c6f75d80924de2d1a9e50a77bc4cbda1896098f7d849f8387d1"
+    },
+    {
+      "doc_id": "PR003",
+      "title": "晋升评审日程与申诉",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "晋升",
+        "职级"
+      ],
+      "supersedes": null,
+      "source_path": "03_晋升规则/PR003_晋升评审日程与申诉.md",
+      "chars": 591,
+      "sha256": "3536d509dfac5bbfb3995c8a0683f7ae63d3800b91df562f2928cbd6119ea69a"
+    },
+    {
+      "doc_id": "PR004",
+      "title": "销售主管岗位胜任力要求",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "晋升",
+        "职级"
+      ],
+      "supersedes": null,
+      "source_path": "03_晋升规则/PR004_销售主管岗位胜任力要求.md",
+      "chars": 608,
+      "sha256": "b12e597a9149372890282b544a61bd53197f7677cf7bba4ed93600dc59354fdd"
+    },
+    {
+      "doc_id": "EMP001",
+      "title": "员工档案_E001_林知远",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "管理层"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP001_员工档案_E001_林知远.docx",
+      "chars": 851,
+      "sha256": "91dc58e13e49c294b2aefaed13dd199fbd34c17488640aeed283649b84441c6d"
+    },
+    {
+      "doc_id": "EMP002",
+      "title": "员工档案_E002_周芷晴",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "销售一部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP002_员工档案_E002_周芷晴.docx",
+      "chars": 853,
+      "sha256": "f60bb8aba9b78f6a2c21b75bdc457dc8528bb035a35db93e39e46b51333965d6"
+    },
+    {
+      "doc_id": "EMP003",
+      "title": "员工档案_E003_陈昊",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "销售一部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP003_员工档案_E003_陈昊.docx",
+      "chars": 849,
+      "sha256": "e30c0279d4aee440c7e738e114ceb05cab86072b055daae69a6b442bfa007309"
+    },
+    {
+      "doc_id": "EMP004",
+      "title": "员工档案_E004_张若宁",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "销售二部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP004_员工档案_E004_张若宁.docx",
+      "chars": 852,
+      "sha256": "5022cb366a9d91d6ca2107c9dd3c930bd65d4ac608f1565b0bcb2ac9f58b813e"
+    },
+    {
+      "doc_id": "EMP005",
+      "title": "员工档案_E005_吴嘉宁",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "采购与品控部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP005_员工档案_E005_吴嘉宁.docx",
+      "chars": 852,
+      "sha256": "e469216404641a3dc142f8e132f1844c80369e85f5148c67d786e70c240cb32a"
+    },
+    {
+      "doc_id": "EMP006",
+      "title": "员工档案_E006_赵明哲",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "物流单证部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP006_员工档案_E006_赵明哲.docx",
+      "chars": 847,
+      "sha256": "cdad643888c230ccb810e03e102ef5d35e1cc15e1241dff4f6169e59108a1003"
+    },
+    {
+      "doc_id": "EMP007",
+      "title": "员工档案_E007_刘诗涵",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "财务部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP007_员工档案_E007_刘诗涵.docx",
+      "chars": 849,
+      "sha256": "856fdace05527fc4d4214937dd4da232c9d04a9570f74169d4925ce05e4dd80d"
+    },
+    {
+      "doc_id": "EMP008",
+      "title": "员工档案_E008_何嘉怡",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "在职",
+        "HR行政部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP008_员工档案_E008_何嘉怡.docx",
+      "chars": 851,
+      "sha256": "cabb464a50a2f55b5cb17cceca9c536417357148ca82d1e1d551f787476e5705"
+    },
+    {
+      "doc_id": "EMP009",
+      "title": "员工档案_E009_许承泽",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "离职",
+        "销售二部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP009_员工档案_E009_许承泽.docx",
+      "chars": 866,
+      "sha256": "2ace80df5b1b51dd1b82f048a63f01d8f8e7e8e28df9869e221c6024ca8f0404"
+    },
+    {
+      "doc_id": "EMP010",
+      "title": "员工档案_E010_蒋雨菲",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "离职",
+        "采购与品控部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP010_员工档案_E010_蒋雨菲.docx",
+      "chars": 870,
+      "sha256": "d54a67493016c9387f9c5474937549815679b71a54e79958b11018b85ec63cde"
+    },
+    {
+      "doc_id": "EMP011",
+      "title": "员工档案_E011_沈博宇",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "离职",
+        "物流单证部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP011_员工档案_E011_沈博宇.docx",
+      "chars": 869,
+      "sha256": "f4cf16a0eee8b3fdac1dde010d66134c918635549a6ffc9bbb2d1bd3e103d3b0"
+    },
+    {
+      "doc_id": "EMP012",
+      "title": "员工档案_E012_唐佳琪",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "restricted",
+      "tags": [
+        "员工",
+        "离职",
+        "财务部"
+      ],
+      "supersedes": null,
+      "source_path": "04_员工档案/EMP012_员工档案_E012_唐佳琪.docx",
+      "chars": 864,
+      "sha256": "da878a5d0dcc48713b3d36367a8a8f4dc873e8485cacc03231cb1ad7b2793201"
+    },
+    {
+      "doc_id": "TR001",
+      "title": "海外询盘受理与线索分配",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR001_海外询盘受理与线索分配.md",
+      "chars": 720,
+      "sha256": "1d56a962f50e0fb850bf4bc186198bf24cd6f4025d09fcab00fd10134b5f2c7b"
+    },
+    {
+      "doc_id": "TR002",
+      "title": "样品申请与寄送流程",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR002_样品申请与寄送流程.md",
+      "chars": 683,
+      "sha256": "812b69fe99415012cb3be3432af91666d7a558303a6ee5c30d610c4e86e5f54b"
+    },
+    {
+      "doc_id": "TR003",
+      "title": "报价与PI审核制度V2",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-09-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR003_报价与PI审核制度V2.md",
+      "chars": 816,
+      "sha256": "55c23a2150409611fe1124d3d15e0e6ff91433129c50d8a448c9e2a500ad8745"
+    },
+    {
+      "doc_id": "TR004",
+      "title": "客户与订单交接制度",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR004_客户与订单交接制度.md",
+      "chars": 708,
+      "sha256": "b4f100431a382fef4fcb91cf88931db9009595aeb42ad1f4b85c70850de4c6aa"
+    },
+    {
+      "doc_id": "TR005",
+      "title": "供应商选择与采购下单",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR005_供应商选择与采购下单.md",
+      "chars": 691,
+      "sha256": "e7b841ba65bb67afce385729cc4fc8cacefbc21f50f33e1991182d81ff43488f"
+    },
+    {
+      "doc_id": "TR006",
+      "title": "生产验货与出货放行",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR006_生产验货与出货放行.md",
+      "chars": 702,
+      "sha256": "9b248918a88c8a35d532bdb9d74b2be7c906a74caa981832c65b761c0a5aab4a"
+    },
+    {
+      "doc_id": "TR007",
+      "title": "国际物流与出口单证",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR007_国际物流与出口单证.md",
+      "chars": 706,
+      "sha256": "9ffc4d525fecac70da4d67d13b0fc820fdc60089901a82afddff1c045c446c45"
+    },
+    {
+      "doc_id": "TR008",
+      "title": "收款核销与订单完结",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR008_收款核销与订单完结.md",
+      "chars": 686,
+      "sha256": "2ed26e56ca1df2029994aa7e7ac08ec86bb6bc75a6626878b7a050830c53ce1f"
+    },
+    {
+      "doc_id": "TR009",
+      "title": "出口客户投诉与退换货",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR009_出口客户投诉与退换货.md",
+      "chars": 710,
+      "sha256": "4d407a4329ede09c935df6421ead64612b9b70bc19bb32636e8034a2b678a7f1"
+    },
+    {
+      "doc_id": "TR010",
+      "title": "出口合规与目的国市场准入",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "外贸",
+        "流程"
+      ],
+      "supersedes": null,
+      "source_path": "05_外贸业务流程/TR010_出口合规与目的国市场准入.md",
+      "chars": 717,
+      "sha256": "29f4cf66b5ab9f191c996354b0a66b1c97148ec9aac07fe6e8463a1bcbb8a630"
+    },
+    {
+      "doc_id": "PRD001",
+      "title": "AL-100便携式铝合金折叠支架",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "AL-100",
+        "轻型办公配件"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD001_AL-100便携式铝合金折叠支架.docx",
+      "chars": 1012,
+      "sha256": "55e7cd1c80d22b69037df834917ef73226fc698c50abdc757c0983b822b79bb1"
+    },
+    {
+      "doc_id": "PRD002",
+      "title": "BT-210蓝牙音箱",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "BT-210",
+        "消费电子"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD002_BT-210蓝牙音箱.docx",
+      "chars": 983,
+      "sha256": "61a59b98315b9d171018308788706aca147062ca7ce4788ed2f9ff1024413dae"
+    },
+    {
+      "doc_id": "PRD003",
+      "title": "SS-330不锈钢保温杯",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "SS-330",
+        "家居用品"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD003_SS-330不锈钢保温杯.docx",
+      "chars": 979,
+      "sha256": "53746f60c170c18b40cf09adec0b6ddeb9cbc77e7cbebf0f3cf9dbdf9fb28959"
+    },
+    {
+      "doc_id": "PRD004",
+      "title": "OF-420办公桌收纳组合",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "OF-420",
+        "办公用品"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD004_OF-420办公桌收纳组合.docx",
+      "chars": 982,
+      "sha256": "930318da2bb5a8228e18fc3635938913376e3f5382814e55135e6c9261498f47"
+    },
+    {
+      "doc_id": "PRD005",
+      "title": "LED-510太阳能庭院灯",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "LED-510",
+        "户外照明"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD005_LED-510太阳能庭院灯.docx",
+      "chars": 995,
+      "sha256": "416c6c63aead0732d168852d28fac28a7c5eff9d8d0a435b34658b8037c5b2a6"
+    },
+    {
+      "doc_id": "PRD006",
+      "title": "TX-620棉帆布购物袋",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "TX-620",
+        "纺织品"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD006_TX-620棉帆布购物袋.docx",
+      "chars": 978,
+      "sha256": "f07f64790224d6df569d930746775a69458ebee48c254f33154445c755f375b9"
+    },
+    {
+      "doc_id": "PRD007",
+      "title": "KT-730硅胶厨房铲套装",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2026-01-01",
+      "status": "现行",
+      "access_level": "internal",
+      "tags": [
+        "产品",
+        "KT-730",
+        "厨房用品"
+      ],
+      "supersedes": null,
+      "source_path": "06_产品资料/PRD007_KT-730硅胶厨房铲套装.docx",
+      "chars": 1000,
+      "sha256": "0d7427c12629446c03295c4e5951ca867d1a00d88447ea0b37cb214e7e305e48"
+    },
+    {
+      "doc_id": "HIST001",
+      "title": "历史版_休假与年假制度V1",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2025-01-01",
+      "status": "历史归档（结束于2026-06-30）",
+      "access_level": "internal",
+      "tags": [
+        "历史版本"
+      ],
+      "supersedes": "被HR003替代",
+      "source_path": "07_历史版本/HIST001_历史版_休假与年假制度V1.md",
+      "chars": 743,
+      "sha256": "8f97e7b449cc435246f78bb065865a0d9b7b7e58bb6ffa1ffc85d28298a4e8d5"
+    },
+    {
+      "doc_id": "HIST002",
+      "title": "历史版_差旅报销制度V1",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2025-01-01",
+      "status": "历史归档（结束于2026-07-31）",
+      "access_level": "internal",
+      "tags": [
+        "历史版本"
+      ],
+      "supersedes": "被FIN001替代",
+      "source_path": "07_历史版本/HIST002_历史版_差旅报销制度V1.md",
+      "chars": 677,
+      "sha256": "e7633497c64f66779b24563597f45a30099416d61b30842fbc334d64afc40c4d"
+    },
+    {
+      "doc_id": "HIST003",
+      "title": "历史版_报价与PI审核制度V1",
+      "company": "远澜国际贸易有限公司（虚构）",
+      "version": "1.0",
+      "effective_date": "2025-01-01",
+      "status": "历史归档（结束于2026-08-31）",
+      "access_level": "internal",
+      "tags": [
+        "历史版本"
+      ],
+      "supersedes": "被TR003替代",
+      "source_path": "07_历史版本/HIST003_历史版_报价与PI审核制度V1.md",
+      "chars": 737,
+      "sha256": "14c78472297f20ca7cbb3bbaa3d5cbff2c682c461f6f3c3471221bf9c1f000ff"
+    }
+  ]
+}
