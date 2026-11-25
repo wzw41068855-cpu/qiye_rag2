@@ -25,11 +25,12 @@ class Plan(BaseModel):
       - `"complex"`：复杂问题，通常需要多条子查询或多轮推理。
     - `queries`：Router 生成的独立检索子问题列表。
       - 默认空列表（避免使用可变默认值陷阱）。
-      - 数量上限由 `setting.MAX_SUBQUERIES` 控制，防止子问题爆炸。
+      - 结构化候选容量至少为3；实际执行数量由 `setting.MAX_SUBQUERIES` 控制。
     """
 
     kind: Literal["chat", "simple", "complex"]
-    queries: list[str] = Field(default_factory=list, max_length=setting.MAX_SUBQUERIES)
+    # 结构化候选容量至少3；实际执行预算由clean_queries动态限制，避免扫参/重启语义不一致。
+    queries: list[str] = Field(default_factory=list, max_length=max(3, setting.MAX_SUBQUERIES))
 
 
 class Research(BaseModel):
@@ -47,7 +48,7 @@ class Research(BaseModel):
 
     sufficient: bool
     answer: str = Field(max_length=setting.MAX_ANSWER_CHARS)
-    queries: list[str] = Field(default_factory=list, max_length=setting.MAX_SUBQUERIES)
+    queries: list[str] = Field(default_factory=list, max_length=max(3, setting.MAX_SUBQUERIES))
 
 
 class Verdict(BaseModel):
@@ -63,7 +64,7 @@ class Verdict(BaseModel):
 
     grounded: bool
     reason: str = Field(max_length=setting.MAX_REVIEW_REASON_CHARS)
-    queries: list[str] = Field(default_factory=list, max_length=setting.MAX_SUBQUERIES)
+    queries: list[str] = Field(default_factory=list, max_length=max(3, setting.MAX_SUBQUERIES))
 
 
 class GraphState(TypedDict, total=False):

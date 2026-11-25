@@ -9,6 +9,8 @@ from importlib.metadata import version
 from tempfile import TemporaryDirectory
 from uuid import uuid4
 from statistics import mean
+from time import perf_counter
+from hashlib import sha256
 from qiye_rag import setting
 from qiye_rag.evaluation.dataset import KB, build, corpus
 from qiye_rag.graph.runtime import create_chat
@@ -17,6 +19,7 @@ from qiye_rag.rag.catalog import Catalog
 from qiye_rag.rag.config import PROJECT_ROOT, load_config
 from qiye_rag.rag.indexing import sync
 from qiye_rag.rag.retrieval import search
+from qiye_rag.rag.multi_retrieval import HybridRetriever
 from qiye_rag.rag.vectors import MilvusVectors, Reranker
 from qiye_rag.telemetry import capture, write_result
 
@@ -92,7 +95,7 @@ def summarize(rows: list[dict]) -> dict:
     result = {}
     for category, cases in groups.items():
         values = {"count": len(cases), "errors": sum("error" in c for c in cases)}
-        for name in ("document_recall", "chunk_recall", "all_documents", "mrr", "refusal_correct", "citation_document_recall"):
+        for name in ("document_recall", "chunk_recall", "fact_evidence_recall", "all_documents", "mrr", "refusal_correct", "citation_document_recall"):
             measured = [c["metrics"][name] for c in cases if c.get("metrics", {}).get(name) is not None]
             values[name] = mean(measured) if measured else None
         values["forbidden_hits"] = sum(c.get("metrics", {}).get("forbidden_hits", 0) for c in cases)
@@ -100,7 +103,8 @@ def summarize(rows: list[dict]) -> dict:
     return result
 
 
-def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
+def run(root: Path, dataset: dict, mode: str, output: Path,
+        split_mode: str = "legacy", strategy: str = "legacy", mmr: bool = False) -> dict:
     """执行全部题目并记录阶段日志；真实模式只操作随机临时集合。
 
     Args:
@@ -108,16 +112,23 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
         dataset: 已校验金标准。
         mode: bm25、hybrid 或 agent。
         output: 新建运行目录。
+        split_mode: 切分实验策略。
+        strategy: legacy 或 global。
+        mmr: 是否增加语义 MMR。
     Returns:
         汇总结果。
     """
-    parts, digest = corpus(root)
+    parts, digest = corpus(root, split_mode)
     if digest != dataset["corpus_sha256"]:
         raise ValueError("资料或切块配置已变化，请人工复核并重建金标准")
     output.mkdir(parents=True, exist_ok=False)
     metadata = {"mode": mode, "corpus_sha256": digest, "python": platform.python_version(),
                 "packages": {name: version(name) for name in ("langchain-openai", "langgraph", "jieba", "rank-bm25")},
                 "settings": {name: getattr(setting, name) for name in ("RETRIEVAL_TOP_K", "RETRIEVAL_RECALL", "RRF_K", "MAX_RETRIEVAL_ROUNDS", "MAX_SUBQUERIES")}}
+    metadata.update(split_mode=split_mode, strategy=strategy, mmr=mmr,
+        evidence_budget=setting.EVIDENCE_TOKEN_BUDGET, input_budget=setting.INPUT_TOKEN_BUDGET,
+        source_sha256=sha256(b"".join(p.read_bytes() for p in sorted((PROJECT_ROOT / "src").rglob("*.py")))).hexdigest())
+    (output / "gold.json").write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
     rows = []
     vectors, reranker = NoDense(), KeepOrder()
     config = load_config() if mode != "bm25" else {}
@@ -137,8 +148,14 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
                     vectors = MilvusVectors(config.get("MILVUS_URI", "http://localhost:19530"),
                         config.get("EMBEDDING_MODEL", "text-embedding-v3"), collection, config.get("MILVUS_TOKEN", ""))
                     reranker = Reranker(config.get("RERANK_MODEL", "qwen3-rerank"))
-                    sync(root, KB, catalog, vectors)
+                    old_split = setting.SPLITTER_MODE
+                    try:
+                        setting.SPLITTER_MODE = split_mode
+                        sync(root, KB, catalog, vectors, size=setting.CHUNK_SIZE, overlap=setting.CHUNK_OVERLAP)
+                    finally:
+                        setting.SPLITTER_MODE = old_split
             for case in dataset["cases"]:
+                started = perf_counter()
                 row = {"id": case["id"], "category": case["category"], "mode": mode}
                 levels = ("public", "internal", "restricted") if case["role"] == "hr" else ("public", "internal")
                 with capture() as events:
@@ -152,6 +169,8 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
                                 授权范围内的证据。
                             """
                             return search(query, KB, catalog, vectors, reranker, levels=levels)
+                        if strategy == "global":
+                            retrieve = HybridRetriever(KB, catalog, vectors, reranker, levels, mmr=mmr)
                         state = None
                         if mode == "agent":
                             conversation = Conversation(build_graph(chat, retrieve), {"kb": KB, "levels": levels})
@@ -165,6 +184,13 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
                             query = " ".join(h["question"] for h in case["history"]) + " " + case["question"]
                             hits = retrieve(query.strip())
                         row["metrics"] = metrics(case, hits, state)
+                        facts = case["expected_citations"]
+                        row["metrics"]["fact_evidence_recall"] = mean(
+                            any(h["citation"]["document_id"] == f["document_id"] and
+                                "".join(f["fact"].split()) in "".join(h["text"].split()) for h in hits)
+                            for f in facts) if facts else None
+                        row["evidence_texts"] = [{"document_id": h["citation"]["document_id"],
+                                                   "text": h["text"]} for h in hits]
                         row["results"] = [{"chunk_id": h["citation"]["chunk_id"],
                                            "content_id": h["citation"].get("content_id", h["citation"]["chunk_id"]),
                                            "document_id": h["citation"]["document_id"], "score": h["score"]} for h in hits]
@@ -176,6 +202,7 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
                         if event["stage"] in ("dense", "rerank"):
                             event["disabled"] = True
                 row["events"] = events
+                row["elapsed_ms"] = round((perf_counter() - started) * 1000, 3)
                 by_id = {p["id"]: p for _, cs in catalog.records(KB).values() for p in cs}
                 seen = {i for e in events for i in e.get("chunk_ids", [])}
                 seen.update(r["chunk_id"] for e in events for r in e.get("results", []))
@@ -183,8 +210,13 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
                 row["logical_model_calls"] = sum(e["model_calls"] for e in events)
                 row["known_input_tokens"] = sum(e["input_tokens"] or 0 for e in events)
                 row["known_output_tokens"] = sum(e["output_tokens"] or 0 for e in events)
-                row["known_rerank_tokens"] = sum(e.get("total_tokens") or 0 for e in events)
-                row["token_usage_complete"] = all(e["input_tokens"] is not None for e in events if e["model_calls"])
+                row["known_rerank_tokens"] = sum(e.get("total_tokens") or 0 for e in events if e["stage"] == "rerank_api")
+                row["known_total_tokens"] = sum((e.get("total_tokens") or
+                    ((e["input_tokens"] or 0) + (e["output_tokens"] or 0))) for e in events
+                    if e["stage"] in ("embedding_http", "rerank_api", "plan", "research", "verdict"))
+                # 统计真实 API 响应的 usage，不把父阶段与 API 子事件重复求和。
+                row["token_usage_complete"] = "error" not in row and all(e.get("total_tokens") is not None or e["input_tokens"] is not None
+                    for e in events if e["stage"] in ("embedding_http", "rerank_api", "plan", "research", "verdict"))
                 rows.append(row)
                 write_result(output / "results.jsonl", row)
         finally:
@@ -193,6 +225,8 @@ def run(root: Path, dataset: dict, mode: str, output: Path) -> dict:
             catalog.close()
             if isinstance(vectors, MilvusVectors) and vectors.store.col is not None:
                 vectors.store.col.drop()  # 仅删除本函数生成的随机评测集合。
+            if isinstance(vectors, MilvusVectors):
+                vectors.close()
     summary = {"mode": mode, "corpus_sha256": digest, "python": platform.python_version(),
                "created_at": datetime.now(timezone.utc).isoformat(), "top_k": setting.RETRIEVAL_TOP_K,
                "recall": setting.RETRIEVAL_RECALL, "statistics": summarize(rows)}

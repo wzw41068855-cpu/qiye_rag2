@@ -87,7 +87,7 @@ def sync(root: Path, kb: str, catalog: Catalog, vectors: Any,
         document_ids.add(document_id)
         meta["doc_id"] = meta["document_id"] = document_id
         payload = json.dumps([meta, size, overlap, setting.CHUNK_SEPARATORS, setting.MARKDOWN_HEADERS,
-                              vectors.signature, "versioned-v1"], sort_keys=True,
+                              vectors.signature, setting.SPLITTER_MODE, setting.SPLITTER_VERSION, "versioned-v2"], sort_keys=True,
                              ensure_ascii=False, default=str).encode()
         digest = sha256(path.read_bytes() + payload).hexdigest()
         prepared[source] = (path, meta, digest)

@@ -9,7 +9,8 @@ from qiye_rag.telemetry import stage
 
 def search(query: str, kb: str, catalog: Catalog, vectors: Any, reranker: Any,
            levels: tuple[str, ...] = ("public", "internal"),
-           status: str | None = "现行", top_k: int = setting.RETRIEVAL_TOP_K, recall: int | None = None) -> list[dict]:
+           status: str | None = "现行", top_k: int = setting.RETRIEVAL_TOP_K, recall: int | None = None,
+           candidate_only: bool = False) -> list[dict]:
     """先权限过滤，再混合召回和重排。
 
     Args:
@@ -22,6 +23,7 @@ def search(query: str, kb: str, catalog: Catalog, vectors: Any, reranker: Any,
         status: 文档状态。
         top_k: 最终结果数。
         recall: 每路召回数，未指定时取 max(setting.RETRIEVAL_RECALL, top_k)。
+        candidate_only: 仅返回融合候选，供多查询全局重排。
     Returns:
         正文、重排分数及引用信息。
     """
@@ -74,6 +76,9 @@ def search(query: str, kb: str, catalog: Catalog, vectors: Any, reranker: Any,
     candidates = [by_id[i] for i in sorted(fused, key=fused.get, reverse=True)[:recall]]
     if not candidates:
         return []
+    if candidate_only:
+        return [{"text": c["text"], "score": fused[c["id"]],
+                 "citation": {**c["metadata"], "chunk_id": c["id"]}} for c in candidates]
     with stage("rerank", query=query, model_calls=1) as event:
         scores = reranker.score(query, candidates)
         if len(scores) != len(candidates):

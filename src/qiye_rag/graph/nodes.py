@@ -21,6 +21,8 @@ from collections.abc import Callable
 from typing import Any
 from qiye_rag.graph.state import GraphState, Plan, Research, Verdict
 from qiye_rag.telemetry import stage
+from qiye_rag.tokens import count_text, select_evidence, count_json
+from qiye_rag.rag.multi_retrieval import HybridRetriever
 
 # 当证据不足或审核未通过时，统一输出的安全拒答文案。
 REFUSAL = "当前授权知识库中的证据不足，无法给出可靠答案。请补充问题细节或相关资料。"
@@ -83,10 +85,15 @@ class Nodes:
         """
         #给模型的系统提示中附加 schema 的 JSON Schema，降低输出漂移。
         with stage(schema.__name__.lower(), model_calls=1) as event:
+            system = instruction + "\n只输出符合下列 schema 的 JSON：" + json.dumps(schema.model_json_schema(), ensure_ascii=False)
+            human = json.dumps(payload, ensure_ascii=False, default=str)
+            estimated = count_text(system) + count_text(human) + 32
+            event["offline_input_tokens"] = estimated
+            if estimated > setting.INPUT_TOKEN_BUDGET:
+                event["model_calls"] = 0
+                raise ValueError("模型输入超过上下文预算")
             model = self.chat.with_structured_output(schema, method="json_mode", include_raw=True)
-            value = model.invoke([("system", instruction + "\n只输出符合下列 schema 的 JSON："
-                                   + json.dumps(schema.model_json_schema(), ensure_ascii=False)),
-                                  ("human", json.dumps(payload, ensure_ascii=False, default=str))])
+            value = model.invoke([("system", system), ("human", human)])
             if isinstance(value, dict) and "raw" in value:
                 raw = value["raw"]
                 usage = getattr(raw, "usage_metadata", None) or {}
@@ -142,12 +149,21 @@ class Nodes:
             - attempts: 检索尝试次数 +1。
         """
         with stage("retriever", round=state["attempts"] + 1) as event:
-            evidence = {c["citation"]["chunk_id"]: c for c in state.get("evidence", [])}
-            for query in state["queries"]:
-                for chunk in self.retrieve(query):
-                    evidence[chunk["citation"]["chunk_id"]] = chunk
-            result = list(evidence.values())[:setting.MAX_EVIDENCE_CHUNKS]
+            event["queries"] = state["queries"]
+            if isinstance(self.retrieve, HybridRetriever):
+                history = " ".join(h["question"] for h in state.get("history", [])[-1:])
+                question = (history + " " + state["question"]).strip()
+                candidates = self.retrieve.retrieve_many(state["queries"], question, state.get("evidence", []))
+            else:
+                evidence = {c["citation"]["chunk_id"]: c for c in state.get("evidence", [])}
+                for query in state["queries"]:
+                    for chunk in self.retrieve(query):
+                        evidence[chunk["citation"]["chunk_id"]] = chunk
+                candidates = list(evidence.values())
+            result = select_evidence(candidates)
             event["chunk_ids"] = [c["citation"]["chunk_id"] for c in result]
+            event["evidence_tokens"] = count_json(self.evidence_payload({"evidence": result}))
+            event["dropped_chunks"] = len(candidates) - len(result)
             return {"evidence": result, "attempts": state["attempts"] + 1}
 
     def researcher(self, state: GraphState) -> dict:

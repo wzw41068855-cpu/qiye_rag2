@@ -5,6 +5,7 @@ from pathlib import Path
 from time import perf_counter
 from typing import Any, Iterator
 import json
+import httpx
 
 _events: ContextVar[list[dict] | None] = ContextVar("rag_events", default=None)
 
@@ -59,3 +60,18 @@ def write_result(path: Path, result: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as stream:
         stream.write(json.dumps(result, ensure_ascii=False, allow_nan=False) + "\n")
+
+
+def embedding_response(response: httpx.Response) -> None:
+    """读取 Embedding SDK 原始 usage，不记录向量或请求凭据。
+
+    Args:
+        response: SDK 使用的 HTTP 响应。
+    """
+    response.read()
+    with stage("embedding_http", model_calls=0, http_responses=1) as event:
+        event["status_code"] = response.status_code
+        if response.is_success:
+            usage = response.json().get("usage", {})
+            event.update(input_tokens=usage.get("prompt_tokens", usage.get("total_tokens")),
+                         output_tokens=0, total_tokens=usage.get("total_tokens"), usage_source="api")

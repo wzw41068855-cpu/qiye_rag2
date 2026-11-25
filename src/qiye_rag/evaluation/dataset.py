@@ -3,6 +3,7 @@ import json
 import hashlib
 from pathlib import Path
 from qiye_rag.rag.loader import load_directory
+from qiye_rag.rag.legacy_splitter import split_documents as legacy_split
 from qiye_rag.rag.splitter import split_documents
 from qiye_rag import setting
 
@@ -42,19 +43,22 @@ SEEDS = [
 ]
 
 
-def corpus(root: Path) -> tuple[list[dict], str]:
+def corpus(root: Path, mode: str = "legacy") -> tuple[list[dict], str]:
     """解析真实资料并生成内容身份和快照摘要。
 
     Args:
         root: 数据目录。
+        mode: 切分策略；legacy 保留原始快照以便回归。
     Returns:
         真实 Chunk 列表及内容摘要。
     """
     docs, errors = load_directory(root, KB)
     if errors:
         raise ValueError(f"评测语料解析失败：{errors}")
-    parts = [{"id": d.metadata["chunk_id"], "text": d.page_content, "metadata": d.metadata}
-             for d in split_documents(docs)]
+    # v1 Gold 固定原始切分；新策略显式传参，避免默认参数在导入时冻结。
+    chunks = legacy_split(docs, 1000, 200) if mode == "legacy" else split_documents(
+        docs, size=setting.CHUNK_SIZE, overlap=setting.CHUNK_OVERLAP, mode=mode)
+    parts = [{"id": d.metadata["chunk_id"], "text": d.page_content, "metadata": d.metadata} for d in chunks]
     payload = json.dumps(parts, ensure_ascii=False, sort_keys=True).encode()
     return parts, hashlib.sha256(payload).hexdigest()
 
@@ -94,8 +98,8 @@ def build(root: Path, target: Path) -> dict:
                       "forbidden_document_ids": ["EMP002"] if index == 23 else ["EMP011"] if index == 25 else [],
                       "reference_answer": "；".join(f for _, f in anchors) if anchors else "当前授权知识库证据不足，应拒答。"})
     dataset = {"schema_version": 1, "kb_id": KB, "corpus_sha256": digest,
-               "chunk_id_kind": "content_id（非带索引版本的存储主键）", "chunk_size": setting.CHUNK_SIZE,
-               "chunk_overlap": setting.CHUNK_OVERLAP, "cases": cases}
+               "chunk_id_kind": "content_id（非带索引版本的存储主键）", "chunk_size": 1000,
+               "chunk_overlap": 200, "cases": cases}
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
     return dataset

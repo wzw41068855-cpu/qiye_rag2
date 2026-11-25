@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.sqlite import SqliteSaver
 from qiye_rag.rag.catalog import Catalog
 from qiye_rag.rag.config import load_config
-from qiye_rag.rag.retrieval import search
+from qiye_rag.rag.multi_retrieval import HybridRetriever
 from qiye_rag.rag.vectors import MilvusVectors, Reranker
 from qiye_rag.graph.workflow import Conversation, build_graph
 
@@ -38,7 +38,7 @@ def open_conversation(catalog_path: Path, checkpoint_path: Path, kb: str,
     1. 读取配置并校验检索参数。
     2. 校验清单文件存在且包含目标知识库。
     3. 初始化聊天模型、向量检索和重排器。
-    4. 构造带权限约束的 `retrieve` 闭包。
+    4. 构造带权限约束的全局混合检索器。
     5. 打开 SQLite checkpoint，产出可复用的 Conversation。
     6. 无论成功失败，最终关闭 Catalog 句柄。
 
@@ -84,25 +84,16 @@ def open_conversation(catalog_path: Path, checkpoint_path: Path, kb: str,
             config.get("EMBEDDING_MODEL", "text-embedding-v3"),
             setting.MILVUS_COLLECTION, config.get("MILVUS_TOKEN", ""))
         reranker = Reranker(config.get("RERANK_MODEL", "qwen3-rerank"))
-        #内层 retrieve(query) 闭包。它把 kb、levels、top_k、catalog、vectors、reranker 绑定在当前上下文里：
-        def retrieve(query: str) -> list[dict]:
-            """在固定授权范围内执行混合检索。
-
-            Args:
-                query: 模型生成的检索查询词。
-            Returns:
-                仅包含当前 KB、当前权限等级、当前激活版本的数据证据。
-            """
-            # 将 kb/levels/top_k 固定在闭包中，防止运行时被模型侧篡改
-            return search(query, kb, catalog, vectors, reranker, levels=levels, top_k=top_k)
-
         # 确保 checkpoint 目录存在，再打开 SQLite 持久化器
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         with SqliteSaver.from_conn_string(str(checkpoint_path)) as saver:
             # 作用域指纹：用于追踪本次会话绑定的数据与检索上下文
             scope = {"kb": kb, "levels": sorted(set(levels)), "status": "现行",
                      "catalog": str(catalog_path.resolve()), "vectors": vectors.signature}
-            yield Conversation(build_graph(chat, retrieve, saver), scope)
+            retriever = HybridRetriever(kb, catalog, vectors, reranker, levels, mmr=setting.USE_MMR)
+            yield Conversation(build_graph(chat, retriever, saver), scope)
     finally:
         # 即使中途异常，也保证关闭 Catalog 相关资源
         catalog.close()
+        if "vectors" in locals():
+            vectors.close()

@@ -36,8 +36,7 @@ def ingest(kb: str, file_id: str, filename: str, suffix: str, access_level: str 
         #先从 inbox 读取并标准化为文档对象，再切分成 chunk：
         docs = load_file(staged, {"knowledge_base_id": knowledge_id(kb), "document_id": file_id,
                                   "source_path": filename, "title": filename, "access_level": access_level})
-        parts = split_documents(docs)
-        if not parts:
+        if not split_documents(docs, mode=setting.SPLITTER_MODE):
             raise ValueError("文档未生成有效 Chunk")
         documents = root / "documents"
         documents.mkdir(exist_ok=True)
@@ -59,9 +58,13 @@ def ingest(kb: str, file_id: str, filename: str, suffix: str, access_level: str 
             #调用 sync(...) 做真正的增量索引同步：
             stats = sync(documents, knowledge_id(kb), catalog, vectors,
                          size=setting.CHUNK_SIZE, overlap=setting.CHUNK_OVERLAP)
+            # 预览读取已提交的实际块，避免与UUID来源路径下的索引切块不一致。
+            indexed = catalog.records(knowledge_id(kb))[source][1]
         finally:
             catalog.close()
+            if hasattr(vectors, "close"):
+                vectors.close()
         staged.unlink(missing_ok=True)#最后删除暂存文件并返回结果摘要：
-        return {"filename": filename, "chunks": len(parts), "stats": stats,
-                "preview": [{"text": p.page_content[:200], "length": p.metadata["length"],
-                             "location": p.metadata.get("location", "")} for p in parts[:3]]}
+        return {"filename": filename, "chunks": len(indexed), "stats": stats,
+                "preview": [{"text": p["text"][:200], "length": p["metadata"]["length"],
+                             "location": p["metadata"].get("location", "")} for p in indexed[:3]]}

@@ -30,7 +30,9 @@ def parse(path: Path) -> tuple[list[tuple[str, str]], dict]:
         for i, item in enumerate(doc.iter_inner_content(), 1):
             if isinstance(item, Paragraph):
                 label = "标题" if item.style.name.startswith("Heading") or item.style.name == "Title" else "段落"
-                parts.append((item.text, f"{label} {i}"))
+                level = item.style.name.removeprefix("Heading ")
+                suffix = f" 级 {level}" if label == "标题" and level.isdigit() else ""
+                parts.append((item.text, f"{label} {i}{suffix}"))
             else:
                 parts.append(("\n".join(" | ".join(c.text for c in r.cells) for r in item.rows), f"表格 {i}"))
         return parts, {}
@@ -64,5 +66,5 @@ def chunks(path: Path, metadata: dict, size: int = setting.CHUNK_SIZE, overlap: 
     """
     from qiye_rag.rag.loader import load_file
     from qiye_rag.rag.splitter import split_documents
-    docs = split_documents(load_file(path, metadata), size, overlap)
+    docs = split_documents(load_file(path, metadata), size, overlap, mode=setting.SPLITTER_MODE)
     return [{"id": d.metadata["chunk_id"], "text": d.page_content, "metadata": d.metadata} for d in docs]

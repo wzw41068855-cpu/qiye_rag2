@@ -5,8 +5,16 @@ API 密钥、模型名称和服务 URI 仍由 rag.config.load_config 读取。
 """
 
 # 切块：单位为字符，overlap 必须小于 size；修改后需重新同步索引。
+# 九项参数TPE对照后保留原默认，依据见 eval/tuning/参数选择结论.md。
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
+SPLITTER_MODE = "prefix"  # legacy / section / prefix；实验保留三种策略。
+SPLITTER_VERSION = "structure-v1"
+CHAT_TOKENIZER_PATH = ".rag/tokenizers/deepseek_v4/deepseek_v4_tokenizer/tokenizer.json"
+EVIDENCE_TOKEN_BUDGET = 6000
+INPUT_TOKEN_BUDGET = 12000
+USE_MMR = False
+MMR_LAMBDA = 0.7
 CHUNK_SEPARATORS = ("\n\n", "\n", "。", "；", " ", "")
 MARKDOWN_HEADERS = (("#", "h1"), ("##", "h2"), ("###", "h3"), ("####", "h4"))
 
@@ -30,7 +38,7 @@ NORMALIZE_EMBEDDINGS = True  # 本地 Embedding 使用；云端由提供商处�
 CHAT_TEMPERATURE = 0.0
 CHAT_TIMEOUT_SECONDS = 60
 CHAT_MAX_RETRIES = 1
-CHAT_MAX_TOKENS: int | None = None  # None 使用模型服务默认输出上限。
+CHAT_MAX_TOKENS: int | None = 2000
 RERANK_TIMEOUT_SECONDS = 30
 
 # Agent 执行预算：限制调用成本与无效循环。
@@ -85,6 +93,8 @@ def validate() -> None:
         raise ValueError("CHAT_MAX_TOKENS 须为正数或 None")
     if GRAPH_RECURSION_LIMIT < MAX_RETRIEVAL_ROUNDS * 3 + 5:
         raise ValueError("GRAPH_RECURSION_LIMIT 不足以支持配置的检索轮数")
+    if not 0 < EVIDENCE_TOKEN_BUDGET < INPUT_TOKEN_BUDGET or not 0 <= MMR_LAMBDA <= 1:
+        raise ValueError("上下文预算或 MMR 参数无效")
 
 
 validate()

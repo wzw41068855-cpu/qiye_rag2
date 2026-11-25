@@ -5,7 +5,7 @@ from typing import Any
 import httpx
 from qiye_rag.rag.config import load_config
 from qiye_rag.rag.schema import collection_layout
-from qiye_rag.telemetry import stage
+from qiye_rag.telemetry import stage, embedding_response
 
 
 class MilvusVectors:
@@ -22,13 +22,15 @@ class MilvusVectors:
         """
         from langchain_milvus import Milvus
         config = load_config()
+        self.http_client = None
         #优先使用DASHSCOPE_API系列向量嵌入模型
         if model.startswith("text-embedding-"):
             from langchain_openai import OpenAIEmbeddings
             key = config.get("DASHSCOPE_API_KEY", "")
             if not key:
                 raise ValueError("请在 .env 或环境变量设置 DASHSCOPE_API_KEY")
-            self.embedding = OpenAIEmbeddings(model=model, api_key=key,
+            self.http_client = httpx.Client(event_hooks={"response": [embedding_response]})
+            self.embedding = OpenAIEmbeddings(model=model, api_key=key, http_client=self.http_client,
                 base_url=config.get("DASHSCOPE_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
                 check_embedding_ctx_length=False,
                 chunk_size=min(setting.EMBEDDING_API_BATCH_LIMIT, setting.EMBEDDING_BATCH_SIZE),
@@ -69,6 +71,11 @@ class MilvusVectors:
             JSON 路径。
         """
         return f'metadata["{name}"]'
+
+    def close(self) -> None:
+        """释放本实例持有的 HTTP 连接。"""
+        if self.http_client is not None:
+            self.http_client.close()
 
     def upsert(self, parts: list[dict]) -> None:
         """批量写入带独立编号的新版本，不覆盖已激活块。
